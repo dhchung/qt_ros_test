@@ -10,9 +10,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
-
-
     ros::init(argc, argv, "sensor_driver_viewer");
 
     if(ros::master::check()){
@@ -31,5 +28,7 @@ int main(int argc, char *argv[])
 
     MainWindow w;
     w.show();
+
+
     return a.exec();
 }

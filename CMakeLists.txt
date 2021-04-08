@@ -25,8 +25,14 @@ find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 catkin_package(
     CATKIN_DEPENDS
-        rosbag
+        cv_bridge
+        image_transport
         roscpp
+        sensor_msgs
+        std_msgs
+        rosbag
+        geometry_msgs
+        sensor_msgs
 )
 
 

@@ -6,6 +6,8 @@
 #include "myglwidget.h"
 #include "ros_thread.h"
 
+#include <QMutex>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,6 +21,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QMutex mutex;
+    ROSThread * ros_thread;
+
 private slots:
     void on_rollSpinBox_valueChanged(double arg1);
     void on_pitchSpinBox_valueChanged(double arg1);
@@ -31,7 +36,6 @@ private:
     Ui::MainWindow *ui;
     void update_glwidget();
 
-    ROSThread ros_thread;
 
 };
 #endif // MAINWINDOW_H
