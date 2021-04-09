@@ -6,6 +6,7 @@
 #include <QMatrix4x4>
 #include <QOpenGLShaderProgram>
 #include <QQuaternion>
+#include <vector>
 
 class MyGLWidget : public QOpenGLWidget, public QOpenGLExtraFunctions
 {
@@ -15,6 +16,10 @@ public:
     ~MyGLWidget();
 
     void paintstuff();
+
+    void paint_pointcloud(std::vector<std::vector<float>> & ptcld);
+
+    std::vector<std::vector<float>> cpc;
 
 signals:
 
@@ -30,6 +35,7 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
+    void paintPC(std::vector<std::vector<float>> & pt_cld);
 
 private:
     QOpenGLShaderProgram * m_program;
@@ -38,6 +44,8 @@ private:
     GLuint m_view_loc;
     GLuint m_projection_loc;
     GLuint m_color_loc;
+
+    GLuint m_color_bool;
 
     unsigned int VBO, VAO, EBO, FBO;
 

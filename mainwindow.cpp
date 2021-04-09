@@ -8,11 +8,26 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ros_thread = new ROSThread(this);
+    ros_thread->start();
+
+
+    connect(ros_thread, SIGNAL(lidar1_signal()), this, SLOT(on_updated_lidar1_signal()));
 }
 
 MainWindow::~MainWindow()
 {
+    // if(ros::master::check()) {
+    //     system("/home/dongha/kill_roscore.sh");
+    // }
+
+
     delete ui;
+}
+
+void MainWindow::initialize_ros(ros::NodeHandle & n){
+    ros_thread->ros_initialize(n);
 }
 
 void MainWindow::update_glwidget(){
@@ -62,4 +77,20 @@ void MainWindow::on_zSpinBox_valueChanged(double arg1)
     ui->renderWindow->set_z(static_cast<float>(arg1));
     // std::cout<<"z Changed to "<<arg1<<std::endl;
     update_glwidget();
+}
+
+
+void MainWindow::on_updated_lidar1_signal(){
+
+    std::vector<std::vector<float>> pc;
+    pc.resize(ros_thread->lidar1_pc.size());
+    for(int pid = 0; pid < ros_thread->lidar1_pc.size(); ++pid) {
+        pc[pid].resize(3);
+        pc[pid][0] = ros_thread->lidar1_pc[pid].x;
+        pc[pid][1] = ros_thread->lidar1_pc[pid].y;
+        pc[pid][2] = ros_thread->lidar1_pc[pid].z;
+    }
+    ui->renderWindow->cpc = pc;
+
+    ui->renderWindow->paint_pointcloud(pc);
 }

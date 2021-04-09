@@ -7,6 +7,7 @@
 #include "ros_thread.h"
 
 #include <QMutex>
+#include <vector>
 
 
 QT_BEGIN_NAMESPACE
@@ -24,6 +25,8 @@ public:
     QMutex mutex;
     ROSThread * ros_thread;
 
+    void initialize_ros(ros::NodeHandle & n);
+
 private slots:
     void on_rollSpinBox_valueChanged(double arg1);
     void on_pitchSpinBox_valueChanged(double arg1);
@@ -31,6 +34,9 @@ private slots:
     void on_xSpinBox_valueChanged(double arg1);
     void on_ySpinBox_valueChanged(double arg1);
     void on_zSpinBox_valueChanged(double arg1);
+
+
+    void on_updated_lidar1_signal();
 
 private:
     Ui::MainWindow *ui;

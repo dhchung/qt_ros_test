@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     ros::NodeHandle nh;
 
     MainWindow w;
+    w.initialize_ros(nh);
     w.show();
 
 

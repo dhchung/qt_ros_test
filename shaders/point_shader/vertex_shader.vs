@@ -9,7 +9,6 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 input_color;
 
-
 uniform int color_bool;
 
 void main(){
