@@ -18,12 +18,12 @@ int main(int argc, char *argv[])
         std::cout<<"ros_master_is_off"<<std::endl;
     }
 
-    // if(!ros::master::check()){
-    //     system("/home/dongha/run_roscore.sh");
-    // }
     if(!ros::master::check()){
-        return 0;
+        system("/home/dongha/run_roscore.sh");
     }
+    // if(!ros::master::check()){
+    //     return 0;
+    // }
     ros::NodeHandle nh;
 
     MainWindow w;

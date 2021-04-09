@@ -1,3 +1,6 @@
+#ifndef ROSTHREAD_H
+#define ROSTHREAD_H
+
 #include <QThread>
 #include <iostream>
 #include <ros/ros.h>
@@ -7,9 +10,11 @@
 
 class ROSThread : public QThread{
 
+    Q_OBJECT
+
 public:
-    ROSThread();
-    ~ROSThread();
+    ROSThread(QObject * parent = nullptr);
+    ~ROSThread() override;
     void ros_initialize(ros::NodeHandle &n);
 
     ros::Subscriber test_sub;
@@ -18,5 +23,9 @@ public:
     
 
     void subscribe_callback(const sensor_msgs::ImagePtr& image);
-    
+
+    void run() override;
+
 };
+
+#endif
