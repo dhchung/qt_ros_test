@@ -35,7 +35,6 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-    void paintPC(std::vector<std::vector<float>> & pt_cld);
 
 private:
     QOpenGLShaderProgram * m_program;

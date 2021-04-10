@@ -62,83 +62,42 @@ void MyGLWidget::paintGL(){
     m_program->setUniformValue(m_projection_loc, projection);
     m_program->setUniformValue(m_color_bool, 1);
 
-    float vertices[] = {
-        //Points                //Colors
-        1.0,    0.0,    0.0,
-        0.0,    1.0,    0.0,
-        0.0,    0.0,    1.0,
-        0.0,    0.0,    0.0
-    };
+    int point_num = cpc.size();
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    if(point_num == 0) {
+        m_program->release();
 
-    QVector3D color = QVector3D(1.0, 0.0, 0.0);
+    } else {
 
-    m_program->setUniformValue(m_color_loc, color);
+        float vertices[3*point_num];
 
-    glDrawArrays(GL_POINTS, 0, 4);
+        for(int i = 0; i < point_num; ++i) {
+            vertices[3*i] = cpc[i][0];
+            vertices[3*i+1] = cpc[i][1];
+            vertices[3*i+2] = cpc[i][2];
+        }
 
-    // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    m_program->release();
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        QVector3D color = QVector3D(1.0, 0.0, 0.0);
+
+        m_program->setUniformValue(m_color_loc, color);
+
+        glDrawArrays(GL_POINTS, 0, point_num);
+
+        // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+        m_program->release();
+    }
 }
 
 void MyGLWidget::paint_pointcloud(std::vector<std::vector<float>> & ptcld){
-    paintPC(ptcld);
-}
-
-
-void MyGLWidget::paintPC(std::vector<std::vector<float>> & pt_cld) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(28.0/255.0, 40.0/255.0, 79.0/255.0, 0.5f);
-
-    std::cout<<"Fucking lidar data size = "<<pt_cld.size()<<std::endl;
-
-
-    QMatrix4x4 model;
-    QMatrix4x4 view;
-    QMatrix4x4 projection;
-    projection.perspective(45.0f, width/height, 0.1f, 100.0f);
-
-    view.lookAt(QVector3D(5.0, 0.0, 4.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-    // QQuaternion quaternion = QQuaternion::fromEulerAngles(pitch, yaw, roll);
-    QQuaternion quaternion = QQuaternion::fromEulerAngles(roll, pitch, yaw);
-
-    model.translate(x, y, z);
-    model.rotate(quaternion);
-
-    m_program->bind();
-
-    m_program->setUniformValue(m_model_loc, model);
-    m_program->setUniformValue(m_view_loc, view);
-    m_program->setUniformValue(m_projection_loc, projection);
-    m_program->setUniformValue(m_color_bool, 1);
-
-    float vertices[3*pt_cld.size()];
-
-    for(int i = 0; i < pt_cld.size(); ++i) {
-        vertices[3*i] = pt_cld[i][0];
-        vertices[3*i] = pt_cld[i][1];
-        vertices[3*i] = pt_cld[i][2];
-    }
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    QVector3D color = QVector3D(1.0, 0.0, 0.0);
-
-    m_program->setUniformValue(m_color_loc, color);
-
-    glDrawArrays(GL_POINTS, 0, 4);
-
-    m_program->release();    
+    paintGL();
 }
 
 

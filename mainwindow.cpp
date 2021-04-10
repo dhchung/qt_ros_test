@@ -92,5 +92,5 @@ void MainWindow::on_updated_lidar1_signal(){
     }
     ui->renderWindow->cpc = pc;
 
-    ui->renderWindow->paint_pointcloud(pc);
+    ui->renderWindow->paintstuff();
 }
