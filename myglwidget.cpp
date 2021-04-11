@@ -55,6 +55,7 @@ void MyGLWidget::paintGL(){
     model.translate(x, y, z);
     model.rotate(quaternion);
 
+
     m_program->bind();
 
     m_program->setUniformValue(m_model_loc, model);
@@ -125,4 +126,20 @@ void MyGLWidget::set_y(float y_){
 }
 void MyGLWidget::set_z(float z_){
     z = z_;
+}
+
+
+void MyGLWidget::mousePressEvent(QMouseEvent *event){
+
+    
+    std::cout<<"FUCK"<<std::endl;
+}
+
+void MyGLWidget::mouseReleaseEvent(QMouseEvent *event){
+    std::cout<<"UNFUCK"<<std::endl;
+}
+
+
+void MyGLWidget::mouseMoveEvent(QMouseEvent *event){
+    std::cout<<"SHIT"<<std::endl;
 }

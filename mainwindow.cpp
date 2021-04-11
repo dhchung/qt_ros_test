@@ -22,6 +22,10 @@ MainWindow::~MainWindow()
     //     system("/home/dongha/kill_roscore.sh");
     // }
 
+    ros_thread->terminate();
+
+    ros_thread->quit();
+
 
     delete ui;
 }
@@ -94,3 +98,4 @@ void MainWindow::on_updated_lidar1_signal(){
 
     ui->renderWindow->paintstuff();
 }
+

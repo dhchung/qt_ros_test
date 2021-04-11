@@ -41,7 +41,5 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void update_glwidget();
-
-
 };
 #endif // MAINWINDOW_H

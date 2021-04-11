@@ -7,6 +7,8 @@
 #include <QOpenGLShaderProgram>
 #include <QQuaternion>
 #include <vector>
+#include <QMouseEvent>
+
 
 class MyGLWidget : public QOpenGLWidget, public QOpenGLExtraFunctions
 {
@@ -36,6 +38,10 @@ protected:
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+
 private:
     QOpenGLShaderProgram * m_program;
 
@@ -56,7 +62,7 @@ private:
     float yaw;
     float x;
     float y;
-    float z;
+    float z; 
 };
 
 #endif // MYGLWIDGET_H
