@@ -37,6 +37,7 @@ private slots:
 
 
     void on_updated_lidar1_signal();
+    void on_updated_lidar2_signal();
 
 private:
     Ui::MainWindow *ui;

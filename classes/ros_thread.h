@@ -25,21 +25,26 @@ public:
     ros::Subscriber test_sub;
 
     ros::Subscriber lidar1_sub;
+    ros::Subscriber lidar2_sub;
 
     ros::NodeHandle n_;
 
     pcl::PointCloud<pcl::PointXYZI> lidar1_pc;
+    pcl::PointCloud<pcl::PointXYZI> lidar2_pc;
     
 
     void subscribe_callback(const sensor_msgs::CompressedImagePtr& image);
 
     void subscribe_lidar1_callback(const sensor_msgs::PointCloud2Ptr & ptcld);
 
+    void subscribe_lidar2_callback(const sensor_msgs::PointCloud2Ptr & ptcld);
+
 
     void run() override;
 
 signals:
     void lidar1_signal();
+    void lidar2_signal();
 
 
 };

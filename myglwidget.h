@@ -19,9 +19,8 @@ public:
 
     void paintstuff();
 
-    void paint_pointcloud(std::vector<std::vector<float>> & ptcld);
-
-    std::vector<std::vector<float>> cpc;
+    std::vector<std::vector<float>> lidar1_ptcld;
+    std::vector<std::vector<float>> lidar2_ptcld;
 
 signals:
 

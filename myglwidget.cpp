@@ -2,7 +2,7 @@
 #include <iostream>
 
 MyGLWidget::MyGLWidget(QWidget * parent) : QOpenGLWidget(parent){
-    cpc.clear();
+    lidar1_ptcld.clear();
 }
 MyGLWidget::~MyGLWidget(){}
 
@@ -18,6 +18,8 @@ void MyGLWidget::initializeGL(){
     m_view_loc = m_program->uniformLocation("view");
     m_projection_loc = m_program->uniformLocation("projection");
     m_color_loc = m_program->uniformLocation("input_color");
+
+    m_color_bool = m_program->uniformLocation("color_bool");
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -47,35 +49,30 @@ void MyGLWidget::paintGL(){
     QMatrix4x4 projection;
     projection.perspective(45.0f, width/height, 0.1f, 100.0f);
 
-    view.lookAt(QVector3D(5.0, 0.0, 4.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-    // QQuaternion quaternion = QQuaternion::fromEulerAngles(pitch, yaw, roll);
-    QQuaternion quaternion = QQuaternion::fromEulerAngles(roll, pitch, yaw);
+    view.lookAt(QVector3D(-5.0, 0.0, 4.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
 
-    std::cout<<"roll : "<<roll<<", pitch : "<<pitch<<", roll : "<<roll<<std::endl;
-    model.translate(x, y, z);
-    model.rotate(quaternion);
 
+    model.setToIdentity();
 
     m_program->bind();
-
     m_program->setUniformValue(m_model_loc, model);
     m_program->setUniformValue(m_view_loc, view);
     m_program->setUniformValue(m_projection_loc, projection);
     m_program->setUniformValue(m_color_bool, 1);
 
-    int point_num = cpc.size();
+    int point1_num = lidar1_ptcld.size();
 
-    if(point_num == 0) {
+    if(point1_num == 0) {
         m_program->release();
 
     } else {
 
-        float vertices[3*point_num];
+        float vertices[3*point1_num];
 
-        for(int i = 0; i < point_num; ++i) {
-            vertices[3*i] = cpc[i][0];
-            vertices[3*i+1] = cpc[i][1];
-            vertices[3*i+2] = cpc[i][2];
+        for(int i = 0; i < point1_num; ++i) {
+            vertices[3*i] = lidar1_ptcld[i][0];
+            vertices[3*i+1] = lidar1_ptcld[i][1];
+            vertices[3*i+2] = lidar1_ptcld[i][2];
         }
 
 
@@ -89,16 +86,54 @@ void MyGLWidget::paintGL(){
 
         m_program->setUniformValue(m_color_loc, color);
 
-        glDrawArrays(GL_POINTS, 0, point_num);
+        glDrawArrays(GL_POINTS, 0, point1_num);
 
-        // glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-        m_program->release();
+        // m_program->release();
     }
-}
 
-void MyGLWidget::paint_pointcloud(std::vector<std::vector<float>> & ptcld){
-    paintGL();
+    QQuaternion quaternion = QQuaternion::fromEulerAngles(roll, pitch, yaw);
+    model.translate(x, y, z);
+    model.rotate(quaternion);
+
+
+    // m_program->bind();
+    m_program->setUniformValue(m_model_loc, model);
+    m_program->setUniformValue(m_view_loc, view);
+    m_program->setUniformValue(m_projection_loc, projection);
+    m_program->setUniformValue(m_color_bool, 1);
+
+    int point2_num = lidar2_ptcld.size();
+
+    if(point2_num == 0) {
+        m_program->release();
+
+    } else {
+
+        float vertices[3*point2_num];
+
+        for(int i = 0; i < point2_num; ++i) {
+            vertices[3*i] = lidar2_ptcld[i][0];
+            vertices[3*i+1] = lidar2_ptcld[i][1];
+            vertices[3*i+2] = lidar2_ptcld[i][2];
+        }
+
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        QVector3D color = QVector3D(1.0, 1.0, 0.0);
+        m_program->setUniformValue(m_color_loc, color);
+
+        glDrawArrays(GL_POINTS, 0, point2_num);
+
+    }
+
+    m_program->release();
+
+
 }
 
 
@@ -132,14 +167,15 @@ void MyGLWidget::set_z(float z_){
 void MyGLWidget::mousePressEvent(QMouseEvent *event){
 
     
-    std::cout<<"FUCK"<<std::endl;
+    std::cout<<"MOUSE PRESSED"<<std::endl;
 }
 
 void MyGLWidget::mouseReleaseEvent(QMouseEvent *event){
-    std::cout<<"UNFUCK"<<std::endl;
+    std::cout<<"MOUSE RELEASED"<<std::endl;
 }
 
 
 void MyGLWidget::mouseMoveEvent(QMouseEvent *event){
-    std::cout<<"SHIT"<<std::endl;
+    std::cout<<"MOUSE MOVED"<<std::endl;
+    
 }
