@@ -1,8 +1,10 @@
 #include "myglwidget.h"
-#include <iostream>
 
 MyGLWidget::MyGLWidget(QWidget * parent) : QOpenGLWidget(parent){
     lidar1_ptcld.clear();
+    mouse_last_pose = QPointF(0, 0);
+    mouse_left_pressed = false;
+    mouse_middle_pressed = false;
 }
 MyGLWidget::~MyGLWidget(){}
 
@@ -49,8 +51,7 @@ void MyGLWidget::paintGL(){
     QMatrix4x4 projection;
     projection.perspective(45.0f, width/height, 0.1f, 100.0f);
 
-    view.lookAt(QVector3D(-5.0, 0.0, 4.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 0.0, 1.0));
-
+    view = cam_pose.view;
 
     model.setToIdentity();
 
@@ -139,7 +140,6 @@ void MyGLWidget::paintGL(){
 
 void MyGLWidget::paintstuff(){
     paintGL();
-    std::cout<<"Pushed"<<std::endl;
     update();
 }
 
@@ -165,17 +165,46 @@ void MyGLWidget::set_z(float z_){
 
 
 void MyGLWidget::mousePressEvent(QMouseEvent *event){
-
-    
-    std::cout<<"MOUSE PRESSED"<<std::endl;
+    mouse_last_pose = event->pos();
+    if(event->button() == Qt::LeftButton) {
+        mouse_left_pressed = true;
+    }
+    if(event->button() == Qt::MidButton) {
+        mouse_middle_pressed = true;
+    }
 }
 
 void MyGLWidget::mouseReleaseEvent(QMouseEvent *event){
-    std::cout<<"MOUSE RELEASED"<<std::endl;
+    if(event->button() == Qt::LeftButton) {
+        mouse_left_pressed = false;
+    }
+    if(event->button() == Qt::MidButton) {
+        mouse_middle_pressed = false;
+    }
 }
 
 
 void MyGLWidget::mouseMoveEvent(QMouseEvent *event){
-    std::cout<<"MOUSE MOVED"<<std::endl;
-    
+    float delta_x = event->x() - mouse_last_pose.x();
+    float delta_y = event->y() - mouse_last_pose.y();
+    if(mouse_left_pressed){
+        cam_pose.mouse_movement_update(delta_x, delta_y);
+        paintGL();
+        update();
+    }
+    if(mouse_middle_pressed) {
+        cam_pose.mouse_scroll_movement_update(delta_x, delta_y);
+        paintGL();
+        update();
+    }
+    mouse_last_pose = event->pos();
+}
+
+
+void MyGLWidget::wheelEvent(QWheelEvent * event) {
+    float delta_zoom = event->angleDelta().y();
+    cam_pose.mouse_scroll_update(delta_zoom);
+    paintGL();
+    update();
+
 }
